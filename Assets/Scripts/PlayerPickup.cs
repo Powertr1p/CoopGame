@@ -29,12 +29,22 @@ namespace DefaultNamespace
 
             if (Input.GetKeyDown(KeyCode.E) && _handPoint != null)
             {
-                if (Physics.Raycast(origin, direction, out var hit, maxDistance, _pickupMask))
+                if (_heldObject == null)
                 {
-                    if (hit.collider.TryGetComponent(out PickupItem pickupItem))
+                    if (Physics.Raycast(origin, direction, out var hit, maxDistance, _pickupMask))
                     {
-                        CmdPickupItem(pickupItem.netIdentity);
-                        Debug.Log(pickupItem.name);
+                        if (hit.collider.TryGetComponent(out PickupItem pickupItem))
+                        {
+                            CmdPickupItem(pickupItem.netIdentity);
+                            Debug.Log(pickupItem.name);
+                        }
+                    }
+                }
+                else
+                {
+                    if (_heldObject.TryGetComponent(out NetworkIdentity itemId))
+                    {
+                        CmdDropItem(itemId);
                     }
                 }
             }
@@ -48,6 +58,16 @@ namespace DefaultNamespace
             
             item.PickUp(netIdentity);
             _heldObject = item.gameObject;
+        }
+
+        [Command]
+        public void CmdDropItem(NetworkIdentity itemId)
+        {
+            PickupItem item = itemId.GetComponent<PickupItem>();
+            if (item == null) return;
+            
+            item.Drop();
+            _heldObject = null;
         }
     }
 }
