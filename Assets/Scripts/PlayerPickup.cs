@@ -9,12 +9,20 @@ namespace DefaultNamespace
         
         public Transform HandPoint => _handPoint;
         
+        [SyncVar(hook = nameof(OnHeldObjectChanged))] private NetworkIdentity _syncHeldObject;
         private GameObject _heldObject;
+        
         LayerMask _pickupMask;
 
+        private void OnHeldObjectChanged(NetworkIdentity oldItem, NetworkIdentity newItem)
+        {
+            _heldObject = newItem?.gameObject;
+        }
+        
         private void Start()
         {
             _pickupMask = LayerMask.GetMask("Pickup");
+            _heldObject = _syncHeldObject?.gameObject;
         }
 
         private void Update()
@@ -35,6 +43,13 @@ namespace DefaultNamespace
                     {
                         if (hit.collider.TryGetComponent(out PickupItem pickupItem))
                         {
+                            if (pickupItem.PickedUpBy != null) 
+                            {
+                                Debug.Log("Drop your cube now! >:(");
+                                pickupItem.Drop();
+                                return;
+                            }
+                            
                             CmdPickupItem(pickupItem.netIdentity);
                             Debug.Log(pickupItem.name);
                         }
@@ -57,7 +72,7 @@ namespace DefaultNamespace
             if (item == null) return;
             
             item.PickUp(netIdentity);
-            _heldObject = item.gameObject;
+            _syncHeldObject = itemId;
         }
 
         [Command]
@@ -67,7 +82,7 @@ namespace DefaultNamespace
             if (item == null) return;
             
             item.Drop();
-            _heldObject = null;
+            _syncHeldObject = null;
         }
     }
 }

@@ -12,6 +12,8 @@ namespace DefaultNamespace
         private Vector3 _initialPosition;
         private Quaternion _initialRotation;
         
+        public NetworkIdentity PickedUpBy => _pickedUpBy;
+        
         private void Start()
         {
             _initialPosition = transform.position;
