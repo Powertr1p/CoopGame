@@ -19,7 +19,7 @@ namespace DefaultNamespace
 
         private void Update()
         {
-            if (!authority) return;
+            if (!isLocalPlayer) return;
             
             Vector3 origin = Camera.main.transform.position;
             Vector3 direction = Camera.main.transform.forward;

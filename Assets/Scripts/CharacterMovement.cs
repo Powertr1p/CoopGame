@@ -55,6 +55,7 @@ public class CharacterMovement : NetworkBehaviour
     {
         HandleMovement();
         HandleMouseLook();
+        HandleJump();
     }
 
     [Client]
@@ -73,6 +74,9 @@ public class CharacterMovement : NetworkBehaviour
         
         Vector3 move = transform.right * x + transform.forward * z;
         _characterController.Move(move * _speed * Time.deltaTime);
+        
+        _velocity.y += _gravity * Time.deltaTime; 
+        _characterController.Move(_velocity * Time.deltaTime);  
     }
 
     [Client]
@@ -91,6 +95,13 @@ public class CharacterMovement : NetworkBehaviour
         _cameraTransform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
         
         transform.Rotate(Vector3.up * mouseX);
+    }
+
+    [Client]
+    private void HandleJump()
+    {
+        if (Input.GetButtonDown("Jump") && _isGrounded)
+            _velocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
     }
 
     private void SetLayerRecursively(GameObject obj, int newLayer)
