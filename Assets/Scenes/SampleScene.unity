@@ -550,6 +550,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1871091237062177997, guid: 060208e05bb485241b50e0a83a66fbbd, type: 3}
+      propertyPath: m_Intensity
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6456662388127372376, guid: 060208e05bb485241b50e0a83a66fbbd, type: 3}
       propertyPath: m_Name
       value: Env
