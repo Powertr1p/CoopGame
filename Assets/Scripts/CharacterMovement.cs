@@ -11,7 +11,6 @@ public class CharacterMovement : NetworkBehaviour
     [SerializeField] private float _sensitivity = 200f;
     [SerializeField] private Transform _cameraTransform;
     [SerializeField] private Camera _camera;
-    [SerializeField] private GameObject _helmet;
     [SerializeField] private GameObject _ui;
     
     private CharacterController _characterController;
@@ -37,9 +36,6 @@ public class CharacterMovement : NetworkBehaviour
     {
         _camera.enabled = true;
         _ui.SetActive(true);
-        
-        SetLayerRecursively(_helmet, LayerMask.NameToLayer("IgnoreWithPlayerCamera"));
-        _camera.cullingMask &= ~(1 << LayerMask.NameToLayer("IgnoreWithPlayerCamera"));
     }
     
     private void Start()
