@@ -12,6 +12,7 @@ public class CharacterMovement : NetworkBehaviour
     [SerializeField] private Transform _cameraTransform;
     [SerializeField] private Camera _camera;
     [SerializeField] private GameObject _ui;
+    [SerializeField] private Animator _animator;
     
     private CharacterController _characterController;
     private Vector3 _velocity;
@@ -72,7 +73,10 @@ public class CharacterMovement : NetworkBehaviour
         _characterController.Move(move * _speed * Time.deltaTime);
         
         _velocity.y += _gravity * Time.deltaTime; 
-        _characterController.Move(_velocity * Time.deltaTime);  
+        _characterController.Move(_velocity * Time.deltaTime);
+        
+        _animator.SetFloat("MoveSpeed", move.magnitude);
+        _animator.SetBool("Grounded", _isGrounded);
     }
 
     [Client]

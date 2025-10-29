@@ -301,6 +301,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1172799941155470485}
+  - component: {fileID: 3811505710425816053}
   m_Layer: 0
   m_Name: PlayerVisuals
   m_TagString: Untagged
@@ -325,6 +326,28 @@ Transform:
   - {fileID: 8829017053503025720}
   m_Father: {fileID: 8226667821748758096}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &3811505710425816053
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1608112618635563213}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: f21c9d7ca4fb9aa4a89b30e4b43b35f4, type: 3}
+  m_Controller: {fileID: 9100000, guid: 8b9a677f24793ba45bdc27a1dab7745e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1827359649071043413
 GameObject:
   m_ObjectHideFlags: 0
@@ -1417,7 +1440,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8226667821748758096}
-  - component: {fileID: 8977144480102925162}
   - component: {fileID: 3708013561392805966}
   - component: {fileID: 3459779790165313333}
   - component: {fileID: 7970926843314752110}
@@ -1449,14 +1471,6 @@ Transform:
   - {fileID: 7734450789909502698}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &8977144480102925162
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7017096492447822126}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!143 &3708013561392805966
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1504,6 +1518,7 @@ MonoBehaviour:
   _cameraTransform: {fileID: 4210187686677057533}
   _camera: {fileID: 3799616913239009757}
   _ui: {fileID: 1282073366454380696}
+  _animator: {fileID: 3811505710425816053}
 --- !u!114 &7970926843314752110
 MonoBehaviour:
   m_ObjectHideFlags: 0
