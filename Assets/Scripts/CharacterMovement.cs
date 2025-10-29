@@ -74,9 +74,12 @@ public class CharacterMovement : NetworkBehaviour
         
         _velocity.y += _gravity * Time.deltaTime; 
         _characterController.Move(_velocity * Time.deltaTime);
-        
-        _animator.SetFloat("MoveSpeed", move.magnitude);
-        _animator.SetBool("Grounded", _isGrounded);
+
+        if (authority)
+        {
+            _animator.SetFloat("MoveSpeed", move.magnitude);
+            _animator.SetBool("Grounded", _isGrounded);
+        }
     }
 
     [Client]
