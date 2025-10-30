@@ -17,7 +17,7 @@ public class CharacterMovement : NetworkBehaviour
     [SerializeField] private Transform _cameraTransform;
     [SerializeField] private Camera _camera;
     [SerializeField] private GameObject _ui;
-    [SerializeField] private Animator _animator;
+    [SerializeField] private Animator _animator;    // todo: move into separate character animator controller
     
     private CharacterController _characterController;
     private Vector3 _velocity;

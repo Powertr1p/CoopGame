@@ -5,7 +5,10 @@ namespace DefaultNamespace
 {
     public class PlayerPickup : NetworkBehaviour
     {
+        private static readonly int IsHoldingItem = Animator.StringToHash("isHolding");
+        
         [SerializeField] private Transform _handPoint;
+        [SerializeField] private Animator animator;     // todo: move into separate character animator controller
         
         public Transform HandPoint => _handPoint;
         
@@ -51,6 +54,8 @@ namespace DefaultNamespace
                             }
                             
                             CmdPickupItem(pickupItem.netIdentity);
+                            animator.SetBool(IsHoldingItem, true);
+                            
                             Debug.Log(pickupItem.name);
                         }
                     }
@@ -60,6 +65,7 @@ namespace DefaultNamespace
                     if (_heldObject.TryGetComponent(out NetworkIdentity itemId))
                     {
                         CmdDropItem(itemId);
+                        animator.SetBool(IsHoldingItem, false);
                     }
                 }
             }
