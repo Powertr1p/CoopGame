@@ -6,13 +6,14 @@ namespace DefaultNamespace
     public class PlayerPickup : NetworkBehaviour
     {
         [SerializeField] private Transform _handPoint;
+        [SerializeField] private PlayerRaycaster _raycaster;
         
         public Transform HandPoint => _handPoint;
         
         [SyncVar(hook = nameof(OnHeldObjectChanged))] private NetworkIdentity _syncHeldObject;
         private GameObject _heldObject;
+        private LayerMask _pickupMask;
         
-        LayerMask _pickupMask;
 
         private void OnHeldObjectChanged(NetworkIdentity oldItem, NetworkIdentity newItem)
         {
@@ -28,20 +29,14 @@ namespace DefaultNamespace
         private void Update()
         {
             if (!isLocalPlayer) return;
-            
-            Vector3 origin = Camera.main.transform.position;
-            Vector3 direction = Camera.main.transform.forward;
-            float maxDistance = 4f;
-            
-            Debug.DrawRay(origin, direction * maxDistance, Color.red);
 
             if (Input.GetKeyDown(KeyCode.E) && _handPoint != null)
             {
                 if (_heldObject == null)
                 {
-                    if (Physics.Raycast(origin, direction, out var hit, maxDistance, _pickupMask))
+                    if (_raycaster.GetRaycast(_pickupMask, out Collider coll))
                     {
-                        if (hit.collider.TryGetComponent(out PickupItem pickupItem))
+                        if (coll.TryGetComponent(out PickupItem pickupItem))
                         {
                             if (pickupItem.PickedUpBy != null) 
                             {
