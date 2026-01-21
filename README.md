@@ -2,6 +2,8 @@
 
 Кооперативная многопользовательская игра на Unity с сетевой синхронизацией через Mirror.
 
+[Gameplay demo video](https://youtu.be/9yr0M3DMaog)
+
 ## Технологический стек
 
 - **Engine**: Unity
