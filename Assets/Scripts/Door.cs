@@ -15,6 +15,8 @@ public class Door : NetworkBehaviour
     private Vector3 _hingePivot;
     private float _sendTimer;
     private float _previousMouseDelta;
+    private Vector3 _lastPosition;
+    private float _initialPlayerSide;
 
     [SyncVar(hook = nameof(OnVelocityChanged))]
     private float _syncedVelocity;
@@ -43,16 +45,24 @@ public class Door : NetworkBehaviour
         _hingePivot = transform.TransformPoint(_joint.anchor);
     }
 
-    public void Bind()
+    public void Bind(Vector3 playerPosition)
     {
         _isDragging = true;
         _sendTimer = 0f;
+
+        Vector3 doorRight = transform.right;
+        Vector3 toPlayer = playerPosition - _hingePivot;
+        toPlayer.y = 0f;
+
+        float dotRight = Vector3.Dot(doorRight, toPlayer);
+        _initialPlayerSide = dotRight >= 0f ? 1f : -1f;
     }
 
     public void Unbind()
     {
         _isDragging = false;
         _previousMouseDelta = 0f;
+        _initialPlayerSide = 0f;
         ApplyMotor(0);
     }
 
@@ -60,24 +70,10 @@ public class Door : NetworkBehaviour
     {
         if (!_isDragging) return;
 
-        Vector3 toPlayer = playerPosition - _parent.transform.position;
-        
-        float dot = Vector3.Dot(_parent.transform.forward, toPlayer);
-
-        if (dot > 0)
-        {
-            Debug.Log("Игрок перед дверью: " + dot);
-        }
-        else
-        {
-            Debug.Log("Игрок за дверью: " + dot);
-        }
-
-        var targetPos = Mathf.Sign(dot);
-        
-        float targetVelocity = m * _targetMotorSpeed * _hingeSide * targetPos;
+        float targetVelocity = m * _targetMotorSpeed * _hingeSide * _initialPlayerSide;
         ApplyMotor(targetVelocity);
-        
+
+        _sendTimer += Time.deltaTime;
         if (_sendTimer >= 0.05f)
         {
             CmdSetVelocity(targetVelocity);

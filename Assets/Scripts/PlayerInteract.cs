@@ -28,7 +28,7 @@ namespace DefaultNamespace
                     if (coll.TryGetComponent(out Door door))
                     {
                         _isInteracting = true;
-                        door.Bind();
+                        door.Bind(transform.position);
                         _door = door;
                     }
                 }
