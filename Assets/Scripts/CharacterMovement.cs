@@ -4,6 +4,11 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class CharacterMovement : NetworkBehaviour
 {
+    private static readonly int MoveX = Animator.StringToHash("moveX");
+    private static readonly int MoveY = Animator.StringToHash("moveY");
+    private static readonly int IsGrounded = Animator.StringToHash("isGrounded");
+    private static readonly int IsJumping = Animator.StringToHash("isJumping");
+    
     [SerializeField] private float _speed = 5f;
     [SerializeField] private float _gravity = -9.8f;
     [SerializeField] private float _jumpHeight = 2f;
@@ -11,17 +16,17 @@ public class CharacterMovement : NetworkBehaviour
     [SerializeField] private float _sensitivity = 200f;
     [SerializeField] private Transform _cameraTransform;
     [SerializeField] private Camera _camera;
-    [SerializeField] private GameObject _helmet;
     [SerializeField] private GameObject _ui;
+    [SerializeField] private Animator _animator;
     
     private CharacterController _characterController;
     private Vector3 _velocity;
     private bool _isGrounded;
-    private float _xRotation = 0f;
+    private float _xRotation;
     
     private Vector2 _lastMousePosition;
     private bool _isFirstFrame = true;
-    private bool _restrict = false;
+    private bool _restrict;
 
     private void Awake()
     {
@@ -37,9 +42,6 @@ public class CharacterMovement : NetworkBehaviour
     {
         _camera.enabled = true;
         _ui.SetActive(true);
-        
-        SetLayerRecursively(_helmet, LayerMask.NameToLayer("IgnoreWithPlayerCamera"));
-        _camera.cullingMask &= ~(1 << LayerMask.NameToLayer("IgnoreWithPlayerCamera"));
     }
     
     private void Start()
@@ -65,18 +67,27 @@ public class CharacterMovement : NetworkBehaviour
         if (!isLocalPlayer) return;
         
         _isGrounded = _characterController.isGrounded;
-        
+        // _isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.1f);
+
         if (_isGrounded && _velocity.y < 0)
+        {
             _velocity.y = -2f;
+        }
         
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
+        var x = Input.GetAxis("Horizontal");
+        var z = Input.GetAxis("Vertical");
         
         Vector3 move = transform.right * x + transform.forward * z;
-        _characterController.Move(move * _speed * Time.deltaTime);
+        _characterController.Move(move * (_speed * Time.deltaTime));
         
         _velocity.y += _gravity * Time.deltaTime; 
-        _characterController.Move(_velocity * Time.deltaTime);  
+        _characterController.Move(_velocity * Time.deltaTime);
+        
+        // animator
+        _animator.SetFloat(MoveX, x);
+        _animator.SetFloat(MoveY, z);
+        _animator.SetBool(IsGrounded, _isGrounded);
+        _animator.SetBool(IsJumping, false);
     }
 
     [Client]
@@ -85,8 +96,8 @@ public class CharacterMovement : NetworkBehaviour
         if (_restrict) return;
         if (!isLocalPlayer) return;
         
-        float mouseX = _isFirstFrame ? 0f : Input.GetAxis("Mouse X") * _sensitivity * Time.deltaTime;
-        float mouseY = _isFirstFrame ? 0f : Input.GetAxis("Mouse Y") * _sensitivity * Time.deltaTime;
+        var mouseX = _isFirstFrame ? 0f : Input.GetAxis("Mouse X") * _sensitivity * Time.deltaTime;
+        var mouseY = _isFirstFrame ? 0f : Input.GetAxis("Mouse Y") * _sensitivity * Time.deltaTime;
 
         _isFirstFrame = false;
         
@@ -101,7 +112,10 @@ public class CharacterMovement : NetworkBehaviour
     private void HandleJump()
     {
         if (Input.GetButtonDown("Jump") && _isGrounded)
+        {
             _velocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
+            _animator.SetBool(IsJumping, true);
+        }
     }
 
     private void SetLayerRecursively(GameObject obj, int newLayer)
